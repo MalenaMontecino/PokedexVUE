@@ -12,25 +12,30 @@
             <option value="type">Por tipo</option>
             <option value="range">Por rango</option>
           </select>
+        </div>
+        <div class="col-2">
+          <select v-if="filter === 'type'" class="form-select" aria-label="Default select example" v-model="typeFilter">
+            <option value="">Todos</option>
+            <option v-for="type in allTypes" :key="type" :value="type"> {{ type }} </option>
+
+          </select>
+        </div>
+        <div class="col-2">
           <select v-if="filter === 'type'" class="form-select" aria-label="Default select example" v-model="typeFilter">
             <option value="">Todos</option>
             <option v-for="type in allTypes" :key="type" :value="type"> {{ type }} </option>
           </select>
+          <filtroDrango v-if="filter === 'range'" :pokemons="pokemons" :setFilteredPokemons="setFilteredPokemons" />
         </div>
       </div>
     </div>
     <div class="card-container pl-2" style="height: 70vh;">
-      <p>Zona de cromos</p>
-      <div class="card-grid">
+      <!-- Zona de cromos -->
+      <div class="card-grid p-3">
         <div v-for="pokemon in filteredPokemons" :key="pokemon.id">
-          <pokemon-card
-            :pokemon="pokemon"
-            :isFavorite="favorites.includes(pokemon.id)"
-            :isInTeam="team.includes(pokemon.id)"
-            @update-favorite="updateFavorite"
-            @add-to-team="addToTeam"
-            @remove-from-team="removeFromTeam"
-          />
+          <pokemon-card :pokemon="pokemon" :isFavorite="favorites.includes(pokemon.id)"
+            :isInTeam="team.includes(pokemon.id)" @update-favorite="updateFavorite" @add-to-team="addToTeam"
+            @remove-from-team="removeFromTeam" />
         </div>
       </div>
     </div>
@@ -42,11 +47,14 @@
 
 <script>
 import pokemonCard from "./pokemonCard.vue";
+import filtroDrango from "./filtroDrango.vue";
 
 export default {
   components: {
     pokemonCard,
+    filtroDrango
   },
+
   data() {
     return {
       pokemons: [],
@@ -179,3 +187,4 @@ export default {
   z-index: 9999;
 }
 </style>
+
