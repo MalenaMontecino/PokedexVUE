@@ -1,41 +1,48 @@
 <template>
-  <div style="border: 2px solid salmon; height: 100vh;">
-    <div style="margin: 2rem;">
-      <h1>Pokedex</h1>
-      <div class="row mt-3">
-        <p>Filtrado</p>
-        <div class="col-2">
-          <select class="form-select" aria-label="Default select example" v-model="filter" @change="applyFilter">
-            <option value="">Todos</option>
-            <option value="favorites">Favoritos</option>
-            <option value="team">Equipo</option>
-            <option value="type">Por tipo</option>
-            <option value="range">Por rango</option>
-          </select>
+  <div style="height: 100vh;">
+    <div class="row">
+      <div class="col-7" >
+        <div style="margin: 2rem;">
+          <!-- <h1>Pokedex</h1> -->
+          <div class="row mt-3" style=" width: 50vw;">
+            <p>Filtrado</p>
+            <div class="col-2">
+              <select class="form-select" aria-label="Default select example" v-model="filter" @change="applyFilter">
+                <option value="">Todos</option>
+                <option value="favorites">Favoritos</option>
+                <option value="team">Equipo</option>
+                <option value="type">Por tipo</option>
+                <option value="range">Por rango</option>
+              </select>
+            </div>
+            <div class="col-3">
+              <select v-if="filter === 'type'" class="form-select" aria-label="Default select example" v-model="typeFilter">
+                <option value="">Todos</option>
+                <option v-for="type in allTypes" :key="type" :value="type"> {{ type }} </option>
+              </select>
+              <div style="display: flex;" v-if="filter === 'range'">
+                <filtro-rango @filter-by-range="updateRange"></filtro-rango>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="col-2">
-          <select v-if="filter === 'type'" class="form-select" aria-label="Default select example" v-model="typeFilter">
-            <option value="">Todos</option>
-            <option v-for="type in allTypes" :key="type" :value="type"> {{ type }} </option>
 
-          </select>
-        </div>
-        <div class="col-2">
-          <select v-if="filter === 'type'" class="form-select" aria-label="Default select example" v-model="typeFilter">
-            <option value="">Todos</option>
-            <option v-for="type in allTypes" :key="type" :value="type"> {{ type }} </option>
-          </select>
-          <filtroDrango v-if="filter === 'range'" :pokemons="pokemons" :setFilteredPokemons="setFilteredPokemons" />
+        <div class="card-container pl-2" style="height: 70vh;">
+          <!-- Zona de cromos -->
+          <div class="card-grid p-3">
+            <div v-for="pokemon in filteredPokemons" :key="pokemon.id">
+              <pokemon-card :pokemon="pokemon" :isFavorite="favorites.includes(pokemon.id)"
+                :isInTeam="team.includes(pokemon.id)" @update-favorite="updateFavorite" @add-to-team="addToTeam"
+                @remove-from-team="removeFromTeam" />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="card-container pl-2" style="height: 70vh;">
-      <!-- Zona de cromos -->
-      <div class="card-grid p-3">
-        <div v-for="pokemon in filteredPokemons" :key="pokemon.id">
-          <pokemon-card :pokemon="pokemon" :isFavorite="favorites.includes(pokemon.id)"
-            :isInTeam="team.includes(pokemon.id)" @update-favorite="updateFavorite" @add-to-team="addToTeam"
-            @remove-from-team="removeFromTeam" />
+
+      <div class="col-5">
+        
+        <div class="inventario " style="margin-top: 6rem;">
+          <inventario-items />
         </div>
       </div>
     </div>
@@ -47,14 +54,15 @@
 
 <script>
 import pokemonCard from "./pokemonCard.vue";
-import filtroDrango from "./filtroDrango.vue";
+import FiltroRango from './FiltroRango.vue';
+import InventarioItems from './InventarioItems.vue';
 
 export default {
   components: {
     pokemonCard,
-    filtroDrango
+    FiltroRango,
+    InventarioItems
   },
-
   data() {
     return {
       pokemons: [],
@@ -64,6 +72,7 @@ export default {
       typeFilter: '',
       showAlert: false,
       alertMessage: '',
+      range: 0,
     };
   },
   computed: {
@@ -78,6 +87,8 @@ export default {
         return this.pokemons.filter(pokemon => this.team.includes(pokemon.id));
       } else if (this.filter === 'type' && this.typeFilter !== '') {
         return this.pokemons.filter(pokemon => pokemon.types.includes(this.typeFilter));
+      } else if (this.filter === 'range') {
+        return this.pokemons.filter(pokemon => pokemon.id >= 0 && pokemon.id <= this.range);
       }
       return this.pokemons;
     },
@@ -155,6 +166,9 @@ export default {
         }, 3000);
       }
     },
+    updateRange(range) {
+      this.range = range;
+    },
   },
 };
 </script>
@@ -162,7 +176,7 @@ export default {
 <style scoped>
 .card-container {
   margin-left: 2rem;
-  border: 2px solid blue;
+  border: 2px solid rgb(214, 214, 235);
   width: 50vw;
   height: 90vh;
   overflow-y: auto;
@@ -187,4 +201,3 @@ export default {
   z-index: 9999;
 }
 </style>
-
