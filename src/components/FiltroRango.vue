@@ -16,18 +16,17 @@ export default {
         };
     },
     methods: {
-        filterByRange() {+
+        filterByRange() {
             console.log(this.range)
+            //emite evento del hijo al padre
             this.$emit('filter-by-range', this.range);
         }
     }
 };
 </script>
-<style>
+<style scoped>
 p{
-
     margin-right: 2em; 
-    
 }
 input{
     margin-right: 2em;

@@ -1,4 +1,5 @@
 <template>
+  <!-- si es true se aplica la clase -->
     <div :class="['pokemonCard card', { 'team-card': isPartOfTeam }]" style="width: 14.5rem;">
       <img :src="pokemon.image" class="card-img-top mx-auto" alt="pokemon.name" style="width: 150px; height: 150px;">
       <div class="card-body">
@@ -19,6 +20,7 @@
   
   <script>
   export default {
+    //del padre al hijo
     props: {
       pokemon: {
         type: Object,
@@ -33,6 +35,7 @@
         default: false,
       },
     },
+    //definir datos locales
     data() {
       return {
         isLiked: this.isFavorite,
@@ -53,6 +56,7 @@
       },
     },
     watch: {
+      //si hay cambios en la propiedad se actualizará
       isInTeam(newVal) {
         this.isPartOfTeam = newVal;
       }

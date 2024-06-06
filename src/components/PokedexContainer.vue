@@ -3,10 +3,10 @@
     <div class="row">
       <div class="col-7" >
         <div style="margin: 2rem;">
-          <!-- <h1>Pokedex</h1> -->
           <div class="row mt-3" style=" width: 50vw;">
             <p>Filtrado</p>
             <div class="col-2">
+              
               <select class="form-select" aria-label="Default select example" v-model="filter" @change="applyFilter">
                 <option value="">Todos</option>
                 <option value="favorites">Favoritos</option>
@@ -18,6 +18,7 @@
             <div class="col-3">
               <select v-if="filter === 'type'" class="form-select" aria-label="Default select example" v-model="typeFilter">
                 <option value="">Todos</option>
+                
                 <option v-for="type in allTypes" :key="type" :value="type"> {{ type }} </option>
               </select>
               <div style="display: flex;" v-if="filter === 'range'">
@@ -94,6 +95,7 @@ export default {
     },
     allTypes() {
       // Obtener todos los tipos de los pokemons para el desplegable
+      //reduce la array 
       return this.pokemons.reduce((types, pokemon) => {
         pokemon.types.forEach(type => {
           if (!types.includes(type)) {
